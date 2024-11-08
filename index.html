@@ -3,34 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learning Chatbot</title>
-  
+  <title>Advanced HTML, CSS, and JS Compiler</title>
+  <link rel="stylesheet" href="ST.css">
 </head>
 <body>
-    <style>
-        /* Basic styling for chat */
-body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-.chat-container { width: 400px; background: white; border-radius: 8px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); }
-.chat-box { padding: 20px; max-height: 400px; overflow-y: auto; }
-.input-box { display: flex; border-top: 1px solid #ddd; }
-input[type="text"] { flex: 1; padding: 12px; border: none; }
-button { padding: 12px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-
-    </style>
-  <div class="chat-container">
-    <div class="chat-box" id="chat-box"></div>
-    <div class="input-box">
-      <input type="text" id="user-input" placeholder="Ask me anything..." />
-      <button onclick="sendMessage()">Send</button>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div>
+      <a href="#">Home</a>
+      <a href="#">Coder's Union</a>
+    </div>
+    <div>
+      <span id="user-email" style="margin-right: 10px; font-weight: bold;"></span>
+      <button id="login-btn">Login</button>
+      <button id="signup-btn">Sign Up</button>
+      <button id="logout-btn" style="display: none;">Logout</button>
+      <button id="share-btn">Share Code</button>
+      <button id="my-codes-btn" style="display: none;">My Codes</button>
     </div>
   </div>
-  <script >
-    import { db, collection, addDoc, getDoc, setDoc, doc } from './firebase-config.js';
-// firebase-config.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDoc, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-const firebaseConfig = {
+  <h1>Responsive HTML, CSS, and JavaScript Compiler</h1>
+
+  <!-- Editor and Output Container -->
+  <div class="container">
+    <div class="editor-section">
+      <label for="html-code">HTML Code</label>
+      <textarea id="html-code"></textarea>
+    </div>
+    <div class="editor-section">
+      <label for="css-code">CSS Code</label>
+      <textarea id="css-code"></textarea>
+    </div>
+    <div class="editor-section">
+      <label for="js-code">JavaScript Code</label>
+      <textarea id="js-code"></textarea>
+    </div>
+    <div class="output-section">
+      <h2>Live Output</h2>
+      <iframe id="output-frame"></iframe>
+    </div>
+  </div>
+
+  <!-- Firebase App and Modules -->
+  <script type="module">
+   
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+  import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+
+  const firebaseConfig = {
     apiKey: "AIzaSyCNyZAmw3D8aCqNOHOw0f3YKtZWNatauN8",
     authDomain: "hello-4105a.firebaseapp.com",
     databaseURL: "https://hello-4105a-default-rtdb.firebaseio.com",
@@ -39,60 +61,78 @@ const firebaseConfig = {
     messagingSenderId: "978669199403",
     appId: "1:978669199403:web:6c20e3dbaf815bba890a6e",
     measurementId: "G-2TGPP3E88X"
-};
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth(app);
 
-export { db, collection, addDoc, getDoc, setDoc, doc };
+  // Element References
+  const htmlCode = document.getElementById("html-code");
+  const cssCode = document.getElementById("css-code");
+  const jsCode = document.getElementById("js-code");
+  const outputFrame = document.getElementById("output-frame");
+  const shareBtn = document.getElementById("share-btn");
 
-const chatBox = document.getElementById("chat-box");
-
-async function sendMessage() {
-  const userInput = document.getElementById("user-input");
-  const message = userInput.value.trim();
-  if (!message) return;
-
-  displayMessage("User", message);
-  userInput.value = ""; // Clear input
-
-  // Try to find a response in the database
-  const response = await fetchResponse(message);
-
-  if (response) {
-    displayMessage("Bot", response);
-  } else {
-    displayMessage("Bot", "I'm still learning! Can you help me by providing the right answer?");
-    await logUnansweredQuestion(message);
+  // Update Output Function
+  function updateOutput() {
+    const html = htmlCode.value;
+    const css = `<style>${cssCode.value}</style>`;
+    const js = `<script>${jsCode.value}<\/script>`;
+    const output = `${html}${css}${js}`;
+    outputFrame.contentDocument.open();
+    outputFrame.contentDocument.write(output);
+    outputFrame.contentDocument.close();
   }
-}
 
-function displayMessage(sender, message) {
-  const messageElement = document.createElement("p");
-  messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-  chatBox.appendChild(messageElement);
-  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to bottom
-}
+  htmlCode.addEventListener("input", updateOutput);
+  cssCode.addEventListener("input", updateOutput);
+  jsCode.addEventListener("input", updateOutput);
 
-// Fetch response from Firebase or return null if unknown
-async function fetchResponse(query) {
-  const docRef = doc(db, "responses", query.toLowerCase());
-  const docSnap = await getDoc(docRef);
+  // Share Code Function
+  shareBtn.addEventListener("click", async () => {
+    if (!auth.currentUser) {
+      alert("Please log in to share your code.");
+      return;
+    }
 
-  return docSnap.exists() ? docSnap.data().response : null;
-}
+    const codeData = {
+      html: htmlCode.value,
+      css: cssCode.value,
+      js: jsCode.value,
+      user: auth.currentUser.email,
+    };
 
-// Log unanswered questions to Firebase for future training
-async function logUnansweredQuestion(query) {
-  const docRef = doc(db, "unanswered", query.toLowerCase());
-  await setDoc(docRef, { question: query, timestamp: new Date() });
-}
+    const codeId = Date.now().toString();
+    const codeRef = ref(database, `shared_codes/${codeId}`);
 
-// Add a function to train the bot with new responses
-async function trainBot(query, answer) {
-  const docRef = doc(db, "responses", query.toLowerCase());
-  await setDoc(docRef, { response: answer, timestamp: new Date() });
-}
+    // Save the code in Firebase
+    await set(codeRef, codeData);
+    const shareLink = `${window.location.origin}/?codeId=${codeId}`;
+
+    alert(`Code shared successfully! Share this link:\n${shareLink}`);
+  });
+
+  // Load Shared Code if URL has a codeId
+  const urlParams = new URLSearchParams(window.location.search);
+  const codeId = urlParams.get("codeId");
+
+  if (codeId) {
+    const codeRef = ref(database, `shared_codes/${codeId}`);
+    get(codeRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const { html, css, js } = snapshot.val();
+        htmlCode.value = html;
+        cssCode.value = css;
+        jsCode.value = js;
+        updateOutput();
+      } else {
+        alert("Code not found!");
+      }
+    }).catch((error) => alert("Error loading code: " + error.message));
+  }
+
 
   </script>
 </body>
