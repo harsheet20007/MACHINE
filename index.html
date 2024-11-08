@@ -7,132 +7,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <STYLE>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #f3f4f6;
-      color: #333;
-      padding: 20px;
-      min-height: 100vh;
-      transition: background-color 0.3s ease-in-out;
-    }
-    
-    /* Navbar */
-    .navbar {
-      width: 100%;
-      max-width: 1000px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      background-color: #333;
-      color: #fff;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
-    .navbar a {
-      color: #fff;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
-    }
-    .navbar button {
-      padding: 5px 10px;
-      color: #333;
-      background-color: #f9f9f9;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .navbar button:hover {
-      background-color: #ddd;
-    }
+  <style>
+    /* Your existing styles here */
+  </style>
 
-    /* Container and Editor Styles */
-    .container {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      max-width: 1000px;
-      height: 60vh;
-      transition: height 0.3s ease-in-out;
-    }
-    .editor-section {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-width: 180px;
-      overflow: hidden;
-      border-radius: 5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: flex 0.3s ease;
-    }
-    .editor-section:hover {
-      flex: 1.5;
-    }
-    .editor-section label {
-      font-weight: bold;
-      padding: 8px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      font-size: 14px;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-    }
-    .editor-section textarea {
-      flex: 1;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 14px;
-      resize: none;
-      border: none;
-      outline: none;
-      overflow-y: auto;
-      background: #f0f0f0;
-      transition: background-color 0.3s;
-    }
-    .editor-section textarea:focus {
-      background-color: #e8e8e8;
-    }
-
-    /* Color-coded editors */
-    #html-code { background: #fff5f2; }
-    #css-code { background: #f2f9ff; }
-    #js-code { background: #fffdf2; }
-
-    /* Output Styles */
-    .output-section {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      border-radius: 5px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    .output-section h2 {
-      background-color: #333;
-      color: #fff;
-      padding: 8px;
-      text-align: center;
-      font-size: 14px;
-    }
-    iframe#output-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background-color: #fff;
-    }
-    </STYLE>
   <!-- Navbar -->
   <div class="navbar">
     <div>
@@ -169,98 +47,222 @@
   </div>
 
   <div id="share-link" style="display: none;"></div>
-  
-  <script type="module" >
+
+  <!-- Login/Signup Modal -->
+  <div id="auth-modal" style="display: none;">
+    <h3 id="modal-title">Login</h3>
+    <input type="email" id="email" placeholder="Enter email" required />
+    <input type="password" id="password" placeholder="Enter password" required />
+    <button id="auth-btn">Login</button>
+    <button id="toggle-auth-btn">Sign Up</button>
+  </div>
+
+  <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js';
-import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js';
+    import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js';
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCNyZAmw3D8aCqNOHOw0f3YKtZWNatauN8",
-  authDomain: "hello-4105a.firebaseapp.com",
-  databaseURL: "https://hello-4105a-default-rtdb.firebaseio.com",
-  projectId: "hello-4105a",
-  storageBucket: "hello-4105a.appspot.com",
-  messagingSenderId: "978669199403",
-  appId: "1:978669199403:web:6c20e3dbaf815bba890a6e",
-  measurementId: "G-2TGPP3E88X",
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCNyZAmw3D8aCqNOHOw0f3YKtZWNatauN8",
+      authDomain: "hello-4105a.firebaseapp.com",
+      databaseURL: "https://hello-4105a-default-rtdb.firebaseio.com",
+      projectId: "hello-4105a",
+      storageBucket: "hello-4105a.appspot.com",
+      messagingSenderId: "978669199403",
+      appId: "1:978669199403:web:6c20e3dbaf815bba890a6e",
+      measurementId: "G-2TGPP3E88X",
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
 
-const htmlCode = document.getElementById("html-code");
-const cssCode = document.getElementById("css-code");
-const jsCode = document.getElementById("js-code");
-const outputFrame = document.getElementById("output-frame");
-const shareBtn = document.getElementById("share-btn");
-const shareLink = document.getElementById("share-link");
+    const htmlCode = document.getElementById("html-code");
+    const cssCode = document.getElementById("css-code");
+    const jsCode = document.getElementById("js-code");
+    const outputFrame = document.getElementById("output-frame");
+    const shareBtn = document.getElementById("share-btn");
+    const shareLink = document.getElementById("share-link");
+    const loginBtn = document.getElementById("login-btn");
+    const signupBtn = document.getElementById("signup-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const userEmail = document.getElementById("user-email");
+    const authModal = document.getElementById("auth-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const authBtn = document.getElementById("auth-btn");
+    const toggleAuthBtn = document.getElementById("toggle-auth-btn");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
 
-// Function to update live output
-function updateOutput() {
-  const html = htmlCode.value;
-  const css = `<style>${cssCode.value}</style>`;
-  const js = `<script>${jsCode.value}<\/script>`;
-  const iframeDoc = outputFrame.contentDocument || outputFrame.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(html + css + js);
-  iframeDoc.close();
-}
-
-htmlCode.addEventListener("input", updateOutput);
-cssCode.addEventListener("input", updateOutput);
-jsCode.addEventListener("input", updateOutput);
-
-// Share Code
-shareBtn.onclick = async () => {
-  const codeData = {
-    html: htmlCode.value,
-    css: cssCode.value,
-    js: jsCode.value
-  };
-
-  // Generate a unique ID for the code
-  const uniqueId = `code_${Date.now()}`;
-  const codeRef = ref(db, 'codes/' + uniqueId);
-
-  try {
-    await set(codeRef, codeData);
-    const link = `${window.location.origin}${window.location.pathname}?code=${uniqueId}`;
-    shareLink.style.display = 'block';
-    shareLink.textContent = `Shareable Link: ${link}`;
-    shareLink.href = link;
-  } catch (error) {
-    console.error("Error sharing code:", error);
-  }
-};
-
-// Load Code from Firebase
-async function loadSharedCode(codeId) {
-  const codeRef = ref(db, 'codes/' + codeId);
-  try {
-    const snapshot = await get(codeRef);
-    if (snapshot.exists()) {
-      const code = snapshot.val();
-      htmlCode.value = code.html;
-      cssCode.value = code.css;
-      jsCode.value = code.js;
-      updateOutput();
-    } else {
-      alert("Code not found!");
+    // Function to update live output
+    function updateOutput() {
+      const html = htmlCode.value;
+      const css = `<style>${cssCode.value}</style>`;
+      const js = `<script>${jsCode.value}<\/script>`;
+      const iframeDoc = outputFrame.contentDocument || outputFrame.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(html + css + js);
+      iframeDoc.close();
     }
-  } catch (error) {
-    console.error("Error loading code:", error);
-  }
-}
 
-// Check if URL contains a code parameter
-const urlParams = new URLSearchParams(window.location.search);
-const codeId = urlParams.get("code");
-if (codeId) {
-  loadSharedCode(codeId);
-}
+    htmlCode.addEventListener("input", updateOutput);
+    cssCode.addEventListener("input", updateOutput);
+    jsCode.addEventListener("input", updateOutput);
 
+    // Share Code
+    shareBtn.onclick = async () => {
+      const codeData = {
+        html: htmlCode.value,
+        css: cssCode.value,
+        js: jsCode.value
+      };
+
+      // Generate a unique ID for the code
+      const uniqueId = `code_${Date.now()}`;
+      const codeRef = ref(db, 'codes/' + uniqueId);
+
+      try {
+        await set(codeRef, codeData);
+        const link = `${window.location.origin}${window.location.pathname}?code=${uniqueId}`;
+        shareLink.style.display = 'block';
+        shareLink.textContent = `Shareable Link: ${link}`;
+        shareLink.href = link;
+      } catch (error) {
+        console.error("Error sharing code:", error);
+      }
+    };
+
+    // Load Code from Firebase
+    async function loadSharedCode(codeId) {
+      const codeRef = ref(db, 'codes/' + codeId);
+      try {
+        const snapshot = await get(codeRef);
+        if (snapshot.exists()) {
+          const code = snapshot.val();
+          htmlCode.value = code.html;
+          cssCode.value = code.css;
+          jsCode.value = code.js;
+          updateOutput();
+        } else {
+          alert("Code not found!");
+        }
+      } catch (error) {
+        console.error("Error loading code:", error);
+      }
+    }
+
+    // Check if URL contains a code parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeId = urlParams.get("code");
+    if (codeId) {
+      loadSharedCode(codeId);
+    }
+
+    // Display login/signup modal
+    function toggleAuthModal(isSignup) {
+      authModal.style.display = 'block';
+      if (isSignup) {
+        modalTitle.textContent = 'Sign Up';
+        authBtn.textContent = 'Sign Up';
+        toggleAuthBtn.textContent = 'Login';
+      } else {
+        modalTitle.textContent = 'Login';
+        authBtn.textContent = 'Login';
+        toggleAuthBtn.textContent = 'Sign Up';
+      }
+    }
+
+    // Hide modal
+    function hideAuthModal() {
+      authModal.style.display = 'none';
+      emailInput.value = '';
+      passwordInput.value = '';
+    }
+
+    // Handle Login/Signup form submission
+    authBtn.onclick = () => {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      if (modalTitle.textContent === 'Login') {
+        signInWithEmailAndPassword(auth, email, password)
+          .then(userCredential => {
+            const user = userCredential.user;
+            userEmail.textContent = `Logged in as: ${user.email}`;
+            loginBtn.style.display = 'none';
+            signupBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            hideAuthModal();
+          })
+          .catch(error => {
+            alert(error.message);
+          });
+      } else if (modalTitle.textContent === 'Sign Up') {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(userCredential => {
+            const user = userCredential.user;
+            userEmail.textContent = `Logged in as: ${user.email}`;
+            loginBtn.style.display = 'none';
+            signupBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            hideAuthModal();
+          })
+          .catch(error => {
+            alert(error.message);
+          });
+      }
+    };
+
+    // Toggle between login and signup
+    toggleAuthBtn.onclick = () => {
+      toggleAuthModal(modalTitle.textContent === 'Login');
+    };
+
+    // Logout
+    logoutBtn.onclick = () => {
+      signOut(auth)
+        .then(() => {
+          userEmail.textContent = '';
+          loginBtn.style.display = 'inline-block';
+          signupBtn.style.display = 'inline-block';
+          logoutBtn.style.display = 'none';
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    };
+
+    // Show login modal
+    loginBtn.onclick = () => {
+      toggleAuthModal(false);
+    };
+
+    // Show sign-up modal
+    signupBtn.onclick = () => {
+      toggleAuthModal(true);
+    };
+
+    // Observe auth state
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        userEmail.textContent = `Logged in as: ${user.email}`;
+        loginBtn.style.display = 'none';
+        signupBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        userEmail.textContent = '';
+        loginBtn.style.display = 'inline-block';
+        signupBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+      }
+    });
+
+    // Close modal if clicked outside
+    window.onclick = (event) => {
+      if (event.target === authModal) {
+        hideAuthModal();
+      }
+    };
   </script>
 </body>
 </html>
