@@ -3,171 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced HTML, CSS, and JS Compiler</title>
-  <link rel="stylesheet" href="ST.css">
+  <title>HTML, CSS, JS Compiler</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Navbar -->
-  <div class="navbar">
-    <div>
-      <a href="#">Home</a>
-      <a href="#">Coder's Union</a>
-    </div>
-    <div>
-      <span id="user-email" style="margin-right: 10px; font-weight: bold;"></span>
-      <button id="login-btn">Login</button>
-      <button id="signup-btn">Sign Up</button>
-      <button id="logout-btn" style="display: none;">Logout</button>
-      <button id="share-btn">Share Code</button>
-      <button id="my-codes-btn" style="display: none;">My Codes</button>
-    </div>
-  </div>
-
-  <h1>Responsive HTML, CSS, and JavaScript Compiler</h1>
-
-  <!-- Editor and Output Container -->
-  <div class="container">
-    <div class="editor-section">
-      <label for="html-code">HTML Code</label>
-      <textarea id="html-code"></textarea>
-    </div>
-    <div class="editor-section">
-      <label for="css-code">CSS Code</label>
-      <textarea id="css-code"></textarea>
-    </div>
-    <div class="editor-section">
-      <label for="js-code">JavaScript Code</label>
-      <textarea id="js-code"></textarea>
-    </div>
-    <div class="output-section">
-      <h2>Live Output</h2>
-      <iframe id="output-frame"></iframe>
-    </div>
-  </div>
-
-  <!-- Firebase App and Modules -->
-  <script type="module">
-   
-   import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js';
-import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js';
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-storage.js';
-
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCNyZAmw3D8aCqNOHOw0f3YKtZWNatauN8",
-  authDomain: "hello-4105a.firebaseapp.com",
-  databaseURL: "https://hello-4105a-default-rtdb.firebaseio.com",
-  projectId: "hello-4105a",
-  storageBucket: "hello-4105a.appspot.com",
-  messagingSenderId: "978669199403",
-  appId: "1:978669199403:web:6c20e3dbaf815bba890a6e",
-  measurementId: "G-2TGPP3E88X"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-const storage = getStorage(app);
-
-// Element references
-const htmlCode = document.getElementById("html-code");
-const cssCode = document.getElementById("css-code");
-const jsCode = document.getElementById("js-code");
-const outputFrame = document.getElementById("output-frame");
-const loginBtn = document.getElementById("login-btn");
-const signupBtn = document.getElementById("signup-btn");
-const logoutBtn = document.getElementById("logout-btn");
-const shareBtn = document.getElementById("share-btn");
-const userEmailDisplay = document.getElementById("user-email");
-
-// Live Compiler
-function updateOutput() {
-  const html = htmlCode.value;
-  const css = `<style>${cssCode.value}</style>`;
-  const js = `<script>${jsCode.value}<\/script>`;
-  outputFrame.contentDocument.open();
-  outputFrame.contentDocument.write(html + css + js);
-  outputFrame.contentDocument.close();
-}
-
-htmlCode.addEventListener("input", updateOutput);
-cssCode.addEventListener("input", updateOutput);
-jsCode.addEventListener("input", updateOutput);
-
-// Authentication
-function updateUI(user) {
-  if (user) {
-    userEmailDisplay.textContent = `Logged in as: ${user.email}`;
-    loginBtn.style.display = 'none';
-    signupBtn.style.display = 'none';
-    logoutBtn.style.display = 'block';
-  } else {
-    userEmailDisplay.textContent = '';
-    loginBtn.style.display = 'block';
-    signupBtn.style.display = 'block';
-    logoutBtn.style.display = 'none';
-  }
-}
-
-loginBtn.onclick = async () => {
-  const email = prompt("Email:");
-  const password = prompt("Password:");
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    updateUI(userCredential.user);
-  } catch (error) {
-    alert("Login failed: " + error.message);
-  }
-};
-
-signupBtn.onclick = async () => {
-  const email = prompt("Email:");
-  const password = prompt("Password:");
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    updateUI(userCredential.user);
-  } catch (error) {
-    alert("Signup failed: " + error.message);
-  }
-};
-
-logoutBtn.onclick = async () => {
-  await signOut(auth);
-  updateUI(null);
-};
-
-// Share Code
-shareBtn.onclick = async () => {
-  const htmlContent = htmlCode.value;
-  const cssContent = cssCode.value;
-  const jsContent = jsCode.value;
-  
-  const fileContent = `
-    <html>
-      <head><style>${cssContent}</style></head>
-      <body>${htmlContent}<script>${jsContent}<\/script></body>
-    </html>`;
-  
-  const file = new Blob([fileContent], { type: "text/html" });
-  const fileRef = storageRef(storage, `shared_code/${Date.now()}.html`);
-  
-  try {
-    await uploadBytes(fileRef, file);
-    const downloadURL = await getDownloadURL(fileRef);
-    alert(`Share link: ${downloadURL}`);
-  } catch (error) {
-    alert("Error sharing code: " + error.message);
-  }
-};
-
-// Listen for auth state changes
-onAuthStateChanged(auth, user => updateUI(user));
-
-
-  </script>
   <STYLE>
-  * {
+    * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -290,6 +131,136 @@ onAuthStateChanged(auth, user => updateUI(user));
       height: 100%;
       border: none;
       background-color: #fff;
-    }</STYLE>
+    }
+    </STYLE>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div>
+      <a href="#">Home</a>
+      <a href="#">Coder's Union</a>
+    </div>
+    <div>
+      <span id="user-email"></span>
+      <button id="login-btn">Login</button>
+      <button id="signup-btn">Sign Up</button>
+      <button id="logout-btn" style="display: none;">Logout</button>
+      <button id="share-btn">Share Code</button>
+    </div>
+  </div>
+
+  <h1>HTML, CSS, and JS Compiler</h1>
+  <div class="container">
+    <div class="editor-section">
+      <label for="html-code">HTML Code</label>
+      <textarea id="html-code"></textarea>
+    </div>
+    <div class="editor-section">
+      <label for="css-code">CSS Code</label>
+      <textarea id="css-code"></textarea>
+    </div>
+    <div class="editor-section">
+      <label for="js-code">JavaScript Code</label>
+      <textarea id="js-code"></textarea>
+    </div>
+    <div class="output-section">
+      <h2>Live Output</h2>
+      <iframe id="output-frame"></iframe>
+    </div>
+  </div>
+
+  <div id="share-link" style="display: none;"></div>
+  
+  <script type="module" >
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js';
+import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCNyZAmw3D8aCqNOHOw0f3YKtZWNatauN8",
+  authDomain: "hello-4105a.firebaseapp.com",
+  databaseURL: "https://hello-4105a-default-rtdb.firebaseio.com",
+  projectId: "hello-4105a",
+  storageBucket: "hello-4105a.appspot.com",
+  messagingSenderId: "978669199403",
+  appId: "1:978669199403:web:6c20e3dbaf815bba890a6e",
+  measurementId: "G-2TGPP3E88X",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+const htmlCode = document.getElementById("html-code");
+const cssCode = document.getElementById("css-code");
+const jsCode = document.getElementById("js-code");
+const outputFrame = document.getElementById("output-frame");
+const shareBtn = document.getElementById("share-btn");
+const shareLink = document.getElementById("share-link");
+
+// Function to update live output
+function updateOutput() {
+  const html = htmlCode.value;
+  const css = `<style>${cssCode.value}</style>`;
+  const js = `<script>${jsCode.value}<\/script>`;
+  const iframeDoc = outputFrame.contentDocument || outputFrame.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(html + css + js);
+  iframeDoc.close();
+}
+
+htmlCode.addEventListener("input", updateOutput);
+cssCode.addEventListener("input", updateOutput);
+jsCode.addEventListener("input", updateOutput);
+
+// Share Code
+shareBtn.onclick = async () => {
+  const codeData = {
+    html: htmlCode.value,
+    css: cssCode.value,
+    js: jsCode.value
+  };
+
+  // Generate a unique ID for the code
+  const uniqueId = `code_${Date.now()}`;
+  const codeRef = ref(db, 'codes/' + uniqueId);
+
+  try {
+    await set(codeRef, codeData);
+    const link = `${window.location.origin}${window.location.pathname}?code=${uniqueId}`;
+    shareLink.style.display = 'block';
+    shareLink.textContent = `Shareable Link: ${link}`;
+    shareLink.href = link;
+  } catch (error) {
+    console.error("Error sharing code:", error);
+  }
+};
+
+// Load Code from Firebase
+async function loadSharedCode(codeId) {
+  const codeRef = ref(db, 'codes/' + codeId);
+  try {
+    const snapshot = await get(codeRef);
+    if (snapshot.exists()) {
+      const code = snapshot.val();
+      htmlCode.value = code.html;
+      cssCode.value = code.css;
+      jsCode.value = code.js;
+      updateOutput();
+    } else {
+      alert("Code not found!");
+    }
+  } catch (error) {
+    console.error("Error loading code:", error);
+  }
+}
+
+// Check if URL contains a code parameter
+const urlParams = new URLSearchParams(window.location.search);
+const codeId = urlParams.get("code");
+if (codeId) {
+  loadSharedCode(codeId);
+}
+
+  </script>
 </body>
 </html>
